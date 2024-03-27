@@ -4198,12 +4198,21 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		if (args.length == 0)
 			throw new TownyException(Translatable.of("msg_error_must_be_num"));
 
+		UUID[] buyer = new UUID[1];
+		
+		if(args.length > 1) {
+			if(Bukkit.getPlayer(args[1]) != null) {
+				buyer[0] = Bukkit.getPlayer(args[1]).getUniqueId();
+			}
+		}
+		
 		double forSalePrice = Math.min(MathUtil.getDoubleOrThrow(args[0]), TownySettings.maxBuyTownPrice());
 		Town town = getTownFromPlayerOrThrow(player);
 
 		Confirmation
 			.runOnAccept(() -> {
-				setTownForSale(town, forSalePrice, false);
+				if(buyer[0] == null) setTownForSale(town, forSalePrice, false);
+				else setTownForSale(town, forSalePrice, buyer[0], true);
 				TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_forsale", town.getName(), prettyMoney(forSalePrice)));
 			})
 			.setTitle(Translatable.of("msg_town_sell_confirmation", prettyMoney(forSalePrice)))
@@ -4225,6 +4234,15 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		if (town != null) {
 			town.setForSale(true);
 			town.setForSalePrice(price);
+			town.save();
+		}
+	}
+
+	public static void setTownForSale(Town town, double price, UUID buyerUUID, boolean admin) {
+		if (town != null) {
+			town.setForSale(true);
+			town.setForSalePrice(price);
+			town.setReservedBuyer(buyerUUID);
 			town.save();
 		}
 	}

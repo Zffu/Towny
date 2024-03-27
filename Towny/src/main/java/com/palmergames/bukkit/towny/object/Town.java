@@ -98,6 +98,7 @@ public class Town extends Government implements TownBlockOwner {
 	private boolean hasUnlimitedClaims = false;
 	private boolean isForSale = false;
 	private double forSalePrice = 0;
+	private UUID reservedBuyer;
 	private boolean isTaxPercentage = TownySettings.getTownDefaultTaxPercentage();
 	private TownBlock homeBlock;
 	private TownyWorld world;
@@ -1083,6 +1084,10 @@ public class Town extends Government implements TownBlockOwner {
 	 */
 	public final void setForSalePrice(double forSalePrice) {
 		this.forSalePrice = Math.min(forSalePrice, TownySettings.maxBuyTownPrice());
+	}
+
+	public void setReservedBuyer(UUID reservedBuyer) {
+		this.reservedBuyer = reservedBuyer;
 	}
 
 	/**
