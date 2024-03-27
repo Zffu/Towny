@@ -4265,7 +4265,10 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 
 		Town town = getTownOrThrow(args[0]);
 
-		if (!town.isForSale()) {
+		boolean b = false;
+		if(town.getReservedBuyer() != null) b = (player.getUniqueId().equals(town.getReservedBuyer()));
+		
+		if (!town.isForSale() || b) {
 			throw new TownyException(Translatable.of("msg_town_buytown_not_forsale"));
 		}
 
@@ -4317,6 +4320,7 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 					currentMayor.getAccount().deposit(town.getForSalePrice(), "Payment for town sale");
 
 				town.setForSale(false);
+				town.setReservedBuyer(null);
 				town.save();
 			})
 		.setTitle(Translatable.of("msg_town_buytown_confirmation", town.getName(), prettyMoney(town.getForSalePrice())))

@@ -1090,6 +1090,10 @@ public class Town extends Government implements TownBlockOwner {
 		this.reservedBuyer = reservedBuyer;
 	}
 
+	public UUID getReservedBuyer() {
+		return reservedBuyer;
+	}
+
 	/**
 	 * Get town sale price.
 	 *
